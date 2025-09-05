@@ -115,9 +115,26 @@ Preview the production build:
 npm run preview
 ```
 
+## API Backend
+
+By default, the app targets a NestJS backend on `http://localhost:3000`. You can configure the API endpoint via `VITE_API_BASE_URL`.
+
+### Configure API URL
+
+Create `frontend/.env`:
+
+```
+VITE_API_BASE_URL=http://localhost:3000
+```
+
+### NestJS Backend
+
+- Start the backend: `cd backend && npm run start:dev`
+- Optional: seed DB from `frontend/db.json`: `npm run seed:reset` in `backend`
+
 ## JSON Server Setup (Optional)
 
-For persistent data storage during development, you can use json-server:
+As an alternative for quick prototyping, you can use json-server:
 
 ### Install JSON Server
 
@@ -178,7 +195,11 @@ json-server --watch db.json --port 3001
 npx json-server --watch db.json --port 3001
 ```
 
-The JSON server will be available at `http://localhost:3001`
+The JSON server will be available at `http://localhost:3001`. To point the app to it, set:
+
+```
+VITE_API_BASE_URL=http://localhost:3001
+```
 
 ## 🧪 Testing
 

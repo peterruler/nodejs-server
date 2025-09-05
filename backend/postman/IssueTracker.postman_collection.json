@@ -1,0 +1,203 @@
+{
+  "info": {
+    "name": "Issue Tracker API",
+    "_postman_id": "8f7f1b15-49f1-4b40-9d9f-8f3511ad8a0c",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "description": "Collection to exercise the NestJS Issue Tracker backend (Projects & Issues)."
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "projectId", "value": "" },
+    { "key": "issueId", "value": "" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "item": [
+        {
+          "name": "GET /health",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/health", "host": ["{{baseUrl}}"], "path": ["health"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.test('Status is 200', function () { pm.response.to.have.status(200); });",
+                  "pm.test('Has status ok', function () { var json = pm.response.json(); pm.expect(json.status).to.eql('ok'); });"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/", "host": ["{{baseUrl}}"], "path": [""] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] }
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "Projects",
+      "item": [
+        {
+          "name": "GET /Project",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/Project", "host": ["{{baseUrl}}"], "path": ["Project"] }
+          },
+          "event": [
+            { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } }
+          ]
+        },
+        {
+          "name": "POST /Project (create)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Project Alpha\",\n  \"active\": true\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/Project", "host": ["{{baseUrl}}"], "path": ["Project"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.response.to.have.status(201);",
+                  "var json = pm.response.json();",
+                  "pm.expect(json).to.have.property('id');",
+                  "pm.environment.set('projectId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /Project/:id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/Project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["Project", "{{projectId}}"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        },
+        {
+          "name": "PATCH /Project/:id (inactive)",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"active\": false\n}" },
+            "url": { "raw": "{{baseUrl}}/Project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["Project", "{{projectId}}"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        }
+      ]
+    },
+    {
+      "name": "Issues",
+      "item": [
+        {
+          "name": "GET /Issue",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/Issue", "host": ["{{baseUrl}}"], "path": ["Issue"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        },
+        {
+          "name": "GET /Issue?projectId",
+          "request": {
+            "method": "GET",
+            "url": {
+              "raw": "{{baseUrl}}/Issue?projectId={{projectId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["Issue"],
+              "query": [ { "key": "projectId", "value": "{{projectId}}" } ]
+            }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        },
+        {
+          "name": "POST /Issue (create)",
+          "request": {
+            "method": "POST",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Issue 1\",\n  \"priority\": \"2\",\n  \"dueDate\": \"2026-12-31\",\n  \"done\": false,\n  \"projectId\": \"{{projectId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/Issue", "host": ["{{baseUrl}}"], "path": ["Issue"] }
+          },
+          "event": [
+            {
+              "listen": "test",
+              "script": {
+                "type": "text/javascript",
+                "exec": [
+                  "pm.response.to.have.status(201);",
+                  "var json = pm.response.json();",
+                  "pm.expect(json).to.have.property('id');",
+                  "pm.environment.set('issueId', json.id);"
+                ]
+              }
+            }
+          ]
+        },
+        {
+          "name": "GET /Issue/:id",
+          "request": {
+            "method": "GET",
+            "url": { "raw": "{{baseUrl}}/Issue/{{issueId}}", "host": ["{{baseUrl}}"], "path": ["Issue", "{{issueId}}"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        },
+        {
+          "name": "PATCH /Issue/:id (done=true)",
+          "request": {
+            "method": "PATCH",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": { "mode": "raw", "raw": "{\n  \"done\": true\n}" },
+            "url": { "raw": "{{baseUrl}}/Issue/{{issueId}}", "host": ["{{baseUrl}}"], "path": ["Issue", "{{issueId}}"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        },
+        {
+          "name": "PUT /Issue/:id (replace)",
+          "request": {
+            "method": "PUT",
+            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"title\": \"Updated Title\",\n  \"priority\": \"1\",\n  \"dueDate\": \"2026-11-30\",\n  \"done\": false,\n  \"projectId\": \"{{projectId}}\"\n}"
+            },
+            "url": { "raw": "{{baseUrl}}/Issue/{{issueId}}", "host": ["{{baseUrl}}"], "path": ["Issue", "{{issueId}}"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        },
+        {
+          "name": "DELETE /Issue/:id",
+          "request": {
+            "method": "DELETE",
+            "url": { "raw": "{{baseUrl}}/Issue/{{issueId}}", "host": ["{{baseUrl}}"], "path": ["Issue", "{{issueId}}"] }
+          },
+          "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
+        }
+      ]
+    }
+  ]
+}
+

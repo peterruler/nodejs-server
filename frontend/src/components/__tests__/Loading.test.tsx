@@ -7,7 +7,9 @@ describe('Loading Component', () => {
     
     expect(screen.getByRole('status')).toBeInTheDocument();
     expect(screen.getByText('Lade Daten...')).toBeInTheDocument();
-    expect(screen.getByText('Stelle sicher, dass der JSON-Server läuft (http://localhost:3001)')).toBeInTheDocument();
+    expect(
+      screen.getByText('Stelle sicher, dass die API läuft (http://localhost:3000)')
+    ).toBeInTheDocument();
   });
 
   test('has correct structure', () => {
