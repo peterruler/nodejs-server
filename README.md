@@ -52,6 +52,21 @@ npm run dev
 
 Das Frontend läuft auf: `http://localhost:5173`
 
+### Backend Tests ausführen
+
+```bash
+cd backend
+
+# Unit Tests einmalig
+npm test
+
+# Watch‑Modus
+npm run test:watch
+
+# Coverage‑Report
+npm run test:cov
+```
+
 ## Projektstruktur
 
 ```

@@ -25,5 +25,7 @@ export default {
     'src/components/ListProjects.tsx',
     'src/components/Loading.tsx'
   ],
-  watchman: false
+  watchman: false,
+  modulePathIgnorePatterns: ['<rootDir>/dist/'],
+  watchPathIgnorePatterns: ['<rootDir>/dist/']
 };
