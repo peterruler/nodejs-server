@@ -4,6 +4,28 @@ Ein TypeScript-basierter Fullstack Issue Tracker mit NestJS Backend und React Fr
 
 ## Schnellstart
 
+### 🐳 Mit Docker (Empfohlen)
+
+```bash
+# Gesamte Anwendung mit Docker Compose starten
+docker-compose up -d
+
+# Logs verfolgen
+docker-compose logs -f
+
+# Anwendung stoppen
+docker-compose down
+```
+
+Die Anwendung ist verfügbar unter:
+- **Frontend**: `http://localhost:5173`
+- **Backend API**: `http://localhost:3000`
+- **Health Check**: `http://localhost:3000/health`
+
+> 📋 **Detaillierte Docker-Anleitung** finden Sie in [`DOCKER.md`](./DOCKER.md)
+
+### 💻 Lokale Entwicklung
+
 ### for development
 - postgres : `docker run --name nodejs-server-db -e POSTGRES_DB=issuetracker -e POSTGRES_PASSWORD=foobert99 -p 5432:5432 -v pgdata:/var/lib/postgresql/data -d postgres`
 - backend: `cd backend && npm i && npm run start:dev`
@@ -102,6 +124,12 @@ nodejs-server/
   - Role-based Access Control (RBAC)
   - Security Best Practices
   - Frontend Integration Guide
+
+- **Docker Deployment**: Containerisierung in [`DOCKER.md`](./DOCKER.md)
+  - Docker Compose Setup
+  - Multi-stage Dockerfiles
+  - Production Deployment
+  - Monitoring & Security
 
 ## Technologie-Stack
 
