@@ -4,6 +4,8 @@ import { AppModule } from './app.module';
 import { DataSource } from 'typeorm';
 import { Project } from './issuetracker/entities/project.entity';
 import { Issue } from './issuetracker/entities/issue.entity';
+import { User } from './users/user.entity';
+import * as bcrypt from 'bcrypt';
 import * as fs from 'node:fs';
 import * as path from 'node:path';
 
@@ -62,6 +64,7 @@ async function run() {
     const dataSource = appContext.get(DataSource);
     const projectRepo = dataSource.getRepository(Project);
     const issueRepo = dataSource.getRepository(Issue);
+    const userRepo = dataSource.getRepository(User);
     const resetEnv = (process.env.RESET_SEED || '').toLowerCase();
     const resetArg = process.argv.some((a) => a === '--reset' || a === '-r');
     const doReset = resetArg || ['1', 'true', 'yes', 'on'].includes(resetEnv);
@@ -73,7 +76,7 @@ async function run() {
     if (doReset) {
       console.log('RESET_SEED enabled: clearing tables...');
       // Prefer TRUNCATE for speed and to cascade relations
-      await dataSource.query('TRUNCATE TABLE issues, projects CASCADE');
+      await dataSource.query('TRUNCATE TABLE issues, projects, users CASCADE');
       console.log('Tables cleared.');
     }
 
@@ -91,9 +94,17 @@ async function run() {
       console.log(`Seeding from file: ${dbPath}`);
     }
 
+    // Ensure a default user exists and own all seeded data
+    let owner = await userRepo.findOne({ where: { email: 'seed@example.com' } });
+    if (!owner) {
+      const password = await bcrypt.hash('password', 10);
+      owner = await userRepo.save(userRepo.create({ email: 'seed@example.com', password }));
+      console.log('Created default seed user: seed@example.com / password');
+    }
+
     console.log(`Seeding ${data.Project.length} projects...`);
     for (const p of data.Project) {
-      await projectRepo.save({ id: p.id, name: p.name, active: p.active });
+      await projectRepo.save({ id: p.id, name: p.name, active: p.active, userId: owner.id });
     }
 
     console.log(`Seeding ${data.Issue.length} issues...`);
@@ -111,6 +122,7 @@ async function run() {
         dueDate: i.dueDate,
         done: i.done,
         projectId: i.projectId,
+        userId: owner.id,
       });
     }
 

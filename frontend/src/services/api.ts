@@ -1,5 +1,25 @@
 import { API_BASE_URL } from './config'
 
+function getToken(): string | null {
+  try {
+    if (typeof document !== 'undefined') {
+      const m = document.cookie.match(/(?:^|; )auth_token=([^;]+)/)
+      if (m) return decodeURIComponent(m[1])
+    }
+  } catch {}
+  try {
+    // Fallback for older sessions
+    return localStorage.getItem('token')
+  } catch {}
+  return null
+}
+
+function authHeaders(): Record<string, string> {
+  const t = getToken()
+  if (t) return { Authorization: `Bearer ${t}` }
+  return {}
+}
+
 export interface Project {
   id: string
   name: string
@@ -35,7 +55,7 @@ export const projectAPI = {
   // Get all projects
   async getProjects(): Promise<Project[]> {
     try {
-      const response = await fetch(`${API_BASE_URL}/Project`)
+      const response = await fetch(`${API_BASE_URL}/Project`, { headers: { ...authHeaders() } })
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
@@ -60,9 +80,7 @@ export const projectAPI = {
       
       const createResponse = await fetch(`${API_BASE_URL}/Project`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify(newServerProject),
       })
       
@@ -83,9 +101,7 @@ export const projectAPI = {
     try {
       const updateResponse = await fetch(`${API_BASE_URL}/Project/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify({ active: false }),
       })
       
@@ -102,7 +118,7 @@ export const issueAPI = {
   // Get all issues
   async getIssues(): Promise<Issue[]> {
     try {
-      const issuesResponse = await fetch(`${API_BASE_URL}/Issue`)
+      const issuesResponse = await fetch(`${API_BASE_URL}/Issue`, { headers: { ...authHeaders() } })
       if (!issuesResponse.ok) {
         throw new Error('HTTP error!')
       }
@@ -147,9 +163,7 @@ export const issueAPI = {
       
       const createResponse = await fetch(`${API_BASE_URL}/Issue`, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify(newIssue),
       })
       
@@ -176,9 +190,7 @@ export const issueAPI = {
 
       const updateResponse = await fetch(`${API_BASE_URL}/Issue/${id}`, {
         method: 'PATCH',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json', ...authHeaders() },
         body: JSON.stringify(partial),
       })
       
@@ -199,6 +211,7 @@ export const issueAPI = {
     try {
       const deleteResponse = await fetch(`${API_BASE_URL}/Issue/${id}`, {
         method: 'DELETE',
+        headers: { ...authHeaders() },
       })
       
       return deleteResponse.ok

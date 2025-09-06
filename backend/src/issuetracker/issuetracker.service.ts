@@ -16,48 +16,49 @@ export class IssueTrackerService {
   ) {}
 
   // Projects
-  async listProjects(): Promise<Project[]> {
-    return this.projects.find({ order: { createdAt: 'ASC' } });
+  async listProjects(userId: string): Promise<Project[]> {
+    return this.projects.find({ where: { userId }, order: { createdAt: 'ASC' } });
   }
 
-  async getProject(id: string): Promise<Project> {
-    const proj = await this.projects.findOne({ where: { id } });
+  async getProject(userId: string, id: string): Promise<Project> {
+    const proj = await this.projects.findOne({ where: { id, userId } });
     if (!proj) throw new NotFoundException('Project not found');
     return proj;
   }
 
-  async createProject(dto: CreateProjectDto): Promise<Project> {
+  async createProject(userId: string, dto: CreateProjectDto): Promise<Project> {
     const entity = this.projects.create({
       id: dto.id ?? require('node:crypto').randomUUID(),
       name: dto.name,
       active: dto.active ?? true,
+      userId,
     });
     return this.projects.save(entity);
   }
 
-  async updateProject(id: string, dto: UpdateProjectDto): Promise<Project> {
-    const proj = await this.getProject(id);
+  async updateProject(userId: string, id: string, dto: UpdateProjectDto): Promise<Project> {
+    const proj = await this.getProject(userId, id);
     Object.assign(proj, dto);
     return this.projects.save(proj);
   }
 
   // Issues
-  async listIssues(projectId?: string): Promise<Issue[]> {
+  async listIssues(userId: string, projectId?: string): Promise<Issue[]> {
     if (projectId) {
-      return this.issues.find({ where: { projectId }, order: { createdAt: 'ASC' } });
+      return this.issues.find({ where: { projectId, userId }, order: { createdAt: 'ASC' } });
     }
-    return this.issues.find({ order: { createdAt: 'ASC' } });
+    return this.issues.find({ where: { userId }, order: { createdAt: 'ASC' } });
   }
 
-  async getIssue(id: string): Promise<Issue> {
-    const issue = await this.issues.findOne({ where: { id } });
+  async getIssue(userId: string, id: string): Promise<Issue> {
+    const issue = await this.issues.findOne({ where: { id, userId } });
     if (!issue) throw new NotFoundException('Issue not found');
     return issue;
   }
 
-  async createIssue(dto: CreateIssueDto): Promise<Issue> {
+  async createIssue(userId: string, dto: CreateIssueDto): Promise<Issue> {
     // Ensure project exists
-    await this.getProject(dto.projectId);
+    await this.getProject(userId, dto.projectId);
     const entity = this.issues.create({
       id: dto.id ?? require('node:crypto').randomUUID(),
       title: dto.title,
@@ -65,18 +66,19 @@ export class IssueTrackerService {
       dueDate: dto.dueDate,
       done: dto.done ?? false,
       projectId: dto.projectId,
+      userId,
     });
     return this.issues.save(entity);
   }
 
-  async updateIssue(id: string, dto: UpdateIssueDto): Promise<Issue> {
-    const issue = await this.getIssue(id);
+  async updateIssue(userId: string, id: string, dto: UpdateIssueDto): Promise<Issue> {
+    const issue = await this.getIssue(userId, id);
     Object.assign(issue, dto);
     return this.issues.save(issue);
   }
 
-  async deleteIssue(id: string): Promise<void> {
-    const res = await this.issues.delete(id);
+  async deleteIssue(userId: string, id: string): Promise<void> {
+    const res = await this.issues.delete({ id, userId });
     if (!res.affected) throw new NotFoundException('Issue not found');
   }
 }

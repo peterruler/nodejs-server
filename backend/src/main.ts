@@ -10,7 +10,7 @@ async function bootstrap() {
     new ValidationPipe({ whitelist: true, forbidUnknownValues: false, transform: true }),
   );
   const port = process.env.PORT ? Number(process.env.PORT) : 3000;
-  await app.listen(port, '127.0.0.1');
+  await app.listen(port, '0.0.0.0');
   // eslint-disable-next-line no-console
   console.log(`Server running on http://localhost:${port}`);
 }

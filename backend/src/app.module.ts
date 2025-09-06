@@ -5,9 +5,12 @@ import { HealthController } from './health.controller';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { IssueTrackerModule } from './issuetracker/issuetracker.module';
+import { AuthModule } from './auth/auth.module';
+import { UsersModule } from './users/users.module';
 import { Project } from './issuetracker/entities/project.entity';
 import { Issue } from './issuetracker/entities/issue.entity';
 import { ensureDatabaseExists } from './database/ensure-database';
+import { User } from './users/user.entity';
 
 @Module({
   imports: [
@@ -37,13 +40,15 @@ import { ensureDatabaseExists } from './database/ensure-database';
           username,
           password,
           database,
-          entities: [Project, Issue],
+          entities: [Project, Issue, User],
           synchronize: true,
           logging: false,
         };
       },
     }),
     IssueTrackerModule,
+    UsersModule,
+    AuthModule,
   ],
   controllers: [AppController, HealthController],
   providers: [AppService],

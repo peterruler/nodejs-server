@@ -1,5 +1,6 @@
 import { Column, CreateDateColumn, Entity, Index, ManyToOne, PrimaryColumn, UpdateDateColumn } from 'typeorm';
 import { Project } from './project.entity';
+import { User } from '../../users/user.entity';
 
 @Entity({ name: 'issues' })
 export class Issue {
@@ -27,6 +28,13 @@ export class Issue {
 
   @ManyToOne(() => Project, (project) => project.issues, { onDelete: 'CASCADE' })
   project!: Project;
+
+  @Index('idx_issues_user_id')
+  @Column({ name: 'user_id', type: 'uuid', nullable: true })
+  userId?: string | null;
+
+  @ManyToOne(() => User, (user) => user.issues, { onDelete: 'SET NULL' })
+  user?: User | null;
 
   @CreateDateColumn({ name: 'created_at' })
   createdAt!: Date;

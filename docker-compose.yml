@@ -1,0 +1,57 @@
+version: '3.9'
+
+services:
+  db:
+    image: postgres:latest
+    container_name: issuetracker-db
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+      POSTGRES_DB: issuetracker
+    ports:
+      - '5432:5432'
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile
+    image: issuetracker-backend:latest
+    container_name: issuetracker-backend
+    depends_on:
+      db:
+        condition: service_healthy
+    environment:
+      # App
+      PORT: 3000
+      # Database
+      DATABASE_URL: postgres://postgres:postgres@db:5432/issuetracker
+      # Auth
+      JWT_SECRET: dev-secret
+      JWT_EXPIRES: 1h
+    ports:
+      - '3000:3000'
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+      args:
+        VITE_API_BASE_URL: http://localhost:3000
+    image: issuetracker-frontend:latest
+    container_name: issuetracker-frontend
+    depends_on:
+      - backend
+    ports:
+      - '5173:5173'
+
+volumes:
+  pgdata:
+

@@ -182,6 +182,32 @@ button:focus-visible {
   }
 }
 
+/* Signup modal dark mode styling */
+#signupModal .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+#signupModal .form-control {
+  color: #fff;
+  background-color: #212529;
+  border-color: #495057;
+}
+#signupModal .form-label {
+  color: #fff;
+}
+
+/* Signin modal dark mode styling */
+#signinModal .form-control::placeholder {
+  color: rgba(255, 255, 255, 0.75);
+}
+#signinModal .form-control {
+  color: #fff;
+  background-color: #212529;
+  border-color: #495057;
+}
+#signinModal .form-label {
+  color: #fff;
+}
+
 /* Responsive main content container */
 .main-content-container {
   /* Mobile: Full width using dynamic viewport width */

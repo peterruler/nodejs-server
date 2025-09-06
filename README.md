@@ -4,6 +4,11 @@ Ein TypeScript-basierter Fullstack Issue Tracker mit NestJS Backend und React Fr
 
 ## Schnellstart
 
+### for development
+- postgres : `docker run --name nodejs-server-db -e POSTGRES_DB=issuetracker -e POSTGRES_PASSWORD=foobert99 -p 5432:5432 -v pgdata:/var/lib/postgresql/data -d postgres`
+- backend: `cd backend && npm i && npm run start:dev`
+- frontend: `cd frontend && npm i && npm run dev`
+
 ### Voraussetzungen
 
 - **Node.js** (Version 18 oder höher)
@@ -91,6 +96,12 @@ nodejs-server/
   - React Komponenten
   - Entwicklung & Build
   - Tests
+
+- **Authentication & Authorization**: Sicherheitskonzepte in [`AUTHENTICATION.md`](./AUTHENTICATION.md)
+  - JWT Implementation Strategy
+  - Role-based Access Control (RBAC)
+  - Security Best Practices
+  - Frontend Integration Guide
 
 ## Technologie-Stack
 

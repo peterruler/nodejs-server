@@ -1,0 +1,15 @@
+model User {
+  id                    Int  uuid
+  email                 String  @unique
+  password              String
+  created_at            DateTime @default(now())
+  updated_at            DateTime @default(now()) @updatedAt
+  user_type             UserType
+  projects                 Projects[]
+}
+
+enum UserType {
+  USER
+  SPECIAL
+  ADMIN
+}

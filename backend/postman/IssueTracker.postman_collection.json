@@ -7,6 +7,7 @@
   },
   "variable": [
     { "key": "baseUrl", "value": "http://localhost:3000" },
+    { "key": "token", "value": "" },
     { "key": "projectId", "value": "" },
     { "key": "issueId", "value": "" }
   ],
@@ -55,6 +56,7 @@
           "name": "GET /Project",
           "request": {
             "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": { "raw": "{{baseUrl}}/Project", "host": ["{{baseUrl}}"], "path": ["Project"] }
           },
           "event": [
@@ -65,7 +67,10 @@
           "name": "POST /Project (create)",
           "request": {
             "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"name\": \"Project Alpha\",\n  \"active\": true\n}"
@@ -91,6 +96,7 @@
           "name": "GET /Project/:id",
           "request": {
             "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": { "raw": "{{baseUrl}}/Project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["Project", "{{projectId}}"] }
           },
           "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
@@ -99,7 +105,10 @@
           "name": "PATCH /Project/:id (inactive)",
           "request": {
             "method": "PATCH",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "body": { "mode": "raw", "raw": "{\n  \"active\": false\n}" },
             "url": { "raw": "{{baseUrl}}/Project/{{projectId}}", "host": ["{{baseUrl}}"], "path": ["Project", "{{projectId}}"] }
           },
@@ -114,6 +123,7 @@
           "name": "GET /Issue",
           "request": {
             "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": { "raw": "{{baseUrl}}/Issue", "host": ["{{baseUrl}}"], "path": ["Issue"] }
           },
           "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
@@ -122,6 +132,7 @@
           "name": "GET /Issue?projectId",
           "request": {
             "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": {
               "raw": "{{baseUrl}}/Issue?projectId={{projectId}}",
               "host": ["{{baseUrl}}"],
@@ -135,7 +146,10 @@
           "name": "POST /Issue (create)",
           "request": {
             "method": "POST",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Issue 1\",\n  \"priority\": \"2\",\n  \"dueDate\": \"2026-12-31\",\n  \"done\": false,\n  \"projectId\": \"{{projectId}}\"\n}"
@@ -161,6 +175,7 @@
           "name": "GET /Issue/:id",
           "request": {
             "method": "GET",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": { "raw": "{{baseUrl}}/Issue/{{issueId}}", "host": ["{{baseUrl}}"], "path": ["Issue", "{{issueId}}"] }
           },
           "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
@@ -169,7 +184,10 @@
           "name": "PATCH /Issue/:id (done=true)",
           "request": {
             "method": "PATCH",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "body": { "mode": "raw", "raw": "{\n  \"done\": true\n}" },
             "url": { "raw": "{{baseUrl}}/Issue/{{issueId}}", "host": ["{{baseUrl}}"], "path": ["Issue", "{{issueId}}"] }
           },
@@ -179,7 +197,10 @@
           "name": "PUT /Issue/:id (replace)",
           "request": {
             "method": "PUT",
-            "header": [ { "key": "Content-Type", "value": "application/json" } ],
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{token}}" }
+            ],
             "body": {
               "mode": "raw",
               "raw": "{\n  \"title\": \"Updated Title\",\n  \"priority\": \"1\",\n  \"dueDate\": \"2026-11-30\",\n  \"done\": false,\n  \"projectId\": \"{{projectId}}\"\n}"
@@ -192,6 +213,7 @@
           "name": "DELETE /Issue/:id",
           "request": {
             "method": "DELETE",
+            "header": [ { "key": "Authorization", "value": "Bearer {{token}}" } ],
             "url": { "raw": "{{baseUrl}}/Issue/{{issueId}}", "host": ["{{baseUrl}}"], "path": ["Issue", "{{issueId}}"] }
           },
           "event": [ { "listen": "test", "script": { "type": "text/javascript", "exec": ["pm.response.to.have.status(200);"] } } ]
@@ -200,4 +222,3 @@
     }
   ]
 }
-
