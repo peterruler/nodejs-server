@@ -2,6 +2,9 @@
 
 Ein TypeScript-basierter Fullstack Issue Tracker mit NestJS Backend und React Frontend.
 
+## Screenshot
+![Todo App Screenshot with Auth](_Project/Screenshot.png)
+
 ## Schnellstart
 
 ### 🐳 Mit Docker (Empfohlen)
